@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Tempo</title>
+    <style>
+        /* Documentação do CSS */
+        /* Estilo geral do corpo da página */
+        body {
+            font-family: 'Arial', sans-serif; /* Define uma fonte padrão */
+            background-color: #1c1c1c; /* Cor de fundo escura para destacar as fotos */
+            color: #ffffff; /* Cor do texto branca */
+            display: flex; /* Usa o modelo flexbox para alinhar o conteúdo */
+            flex-direction: column; /* Organiza os itens em coluna */
+            justify-content: center; /* Centraliza verticalmente */
+            align-items: center; /* Centraliza horizontalmente */
+            height: 100vh; /* Ocupa 100% da altura da tela */
+            margin: 0; /* Remove margens padrão */
+            text-align: center; /* Centraliza o texto */
+        }
+
+        /* Container do Slideshow */
+        .slideshow-container {
+            max-width: 500px; /* Largura máxima do slideshow */
+            position: relative; /* Necessário para posicionar as imagens dentro dele */
+            margin: auto;
+            border: 3px solid #fff; /* Adiciona uma borda branca */
+            border-radius: 10px; /* Arredonda as bordas */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* Adiciona uma sombra suave */
+            overflow: hidden; /* Garante que as imagens não "escapem" do arredondamento */
+        }
+
+        /* As imagens do slideshow */
+        .slide-image {
+            width: 100%; /* Faz a imagem ocupar toda a largura do container */
+            vertical-align: middle;
+            display: none; /* Esconde todas as imagens por padrão */
+        }
+
+        /* Efeito de fade (esmaecer) */
+        .fade {
+            animation-name: fade;
+            animation-duration: 1.5s;
+        }
+
+        @keyframes fade {
+            from {opacity: .4}
+            to {opacity: 1}
+        }
+
+        /* Estilo para a mensagem do cronómetro */
+        .cronometro-texto {
+            margin-top: 30px; /* Espaço entre o slideshow e o texto */
+            font-size: 1.5em; /* Tamanho da fonte */
+        }
+
+        /* Estilo para o número do cronómetro */
+        #segundos {
+            font-weight: bold; /* Deixa o número em negrito */
+            color: #ffcc00; /* Cor amarela para destacar */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slideshow-container">
+        <img class="slide-image" src="imagens/foto1.jpg" alt="Foto do casal 1">
+        <img class="slide-image" src="imagens/foto2.jpg" alt="Foto do casal 2">
+        <img class="slide-image" src="imagens/foto3.jpg" alt="Foto do casal 3">
+    </div>
+
+    <p class="cronometro-texto">
+        O nosso tempo parou fazem <span id="segundos">0</span> segundos.
+    </p>
+
+    <script>
+        /* Documentação do JavaScript */
+
+        // --- LÓGICA DO SLIDESHOW ---
+
+        let slideIndex = 0; // Variável para controlar qual imagem está a ser exibida
+        mostrarSlides(); // Chama a função para iniciar o slideshow
+
+        function mostrarSlides() {
+            let i;
+            // Pega todos os elementos com a classe 'slide-image'
+            let slides = document.getElementsByClassName("slide-image");
+
+            // Esconde todas as imagens
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+
+            // Avança para a próxima imagem. Se chegar ao fim, volta para a primeira.
+            slideIndex++;
+            if (slideIndex > slides.length) {
+                slideIndex = 1;
+            }
+
+            // Mostra a imagem atual e adiciona o efeito de fade
+            slides[slideIndex - 1].style.display = "block";
+            slides[slideIndex - 1].classList.add("fade");
+
+
+            // Agenda a próxima troca de imagem para daqui a 4 segundos (4000 milissegundos)
+            setTimeout(mostrarSlides, 4000);
+        }
+
+        // --- LÓGICA DO CRONÓMETRO ---
+
+        // Define a data e hora de início do relacionamento
+        // O formato é: Ano, Mês (0=Janeiro, 10=Novembro), Dia, Hora, Minuto, Segundo
+        const dataInicio = new Date(2020, 10, 15, 19, 10, 0);
+
+        // Pega o elemento 'span' onde o número de segundos será exibido
+        const elementoSegundos = document.getElementById("segundos");
+
+        // Função para atualizar o cronómetro
+        function atualizarCronometro() {
+            // Pega a data e hora atuais
+            const agora = new Date();
+
+            // Calcula a diferença de tempo em milissegundos
+            const diferenca = agora - dataInicio;
+
+            // Converte a diferença de milissegundos para segundos e arredonda para baixo
+            const segundosTotais = Math.floor(diferenca / 1000);
+
+            // Atualiza o texto na página com o número de segundos, formatado com pontos
+            elementoSegundos.textContent = segundosTotais.toLocaleString('pt-BR');
+        }
+
+        // Chama a função 'atualizarCronometro' imediatamente para não começar em 0
+        atualizarCronometro();
+
+        // Configura para que a função 'atualizarCronometro' seja executada a cada 1 segundo (1000 milissegundos)
+        setInterval(atualizarCronometro, 1000);
+
+    </script>
+
+</body>
+</html>
